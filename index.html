@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeTrack Pro</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body class="light-theme">
+  <div class="app-container">
+    <!-- Side Navigation -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h1><i class="fas fa-code"></i> CodeTrack</h1>
+        <button id="themeToggle" aria-label="Toggle theme">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+      
+      <ul class="nav-links">
+        <li class="active" data-screen="dashboard">
+          <i class="fas fa-tachometer-alt"></i> Dashboard
+        </li>
+        <li data-screen="problems">
+          <i class="fas fa-list-check"></i> Problem Sets
+        </li>
+        <li data-screen="stats">
+          <i class="fas fa-chart-line"></i> Statistics
+        </li>
+        <li data-screen="goals">
+          <i class="fas fa-bullseye"></i> Daily Goals
+        </li>
+      </ul>
+      
+      <div class="user-progress">
+        <div class="progress-circle">
+          <svg>
+            <circle class="bg" cx="35" cy="35" r="30"></circle>
+            <circle class="progress" cx="35" cy="35" r="30"></circle>
+          </svg>
+          <div class="progress-text">0%</div>
+        </div>
+        <div class="user-details">
+          <span class="username">Coder</span>
+          <span class="level">Level 1</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Dashboard Screen -->
+      <section class="screen dashboard active-screen">
+        <div class="dashboard-header">
+          <h2><i class="fas fa-tachometer-alt"></i> Your Coding Dashboard</h2>
+          <div class="date-display" id="currentDate"></div>
+        </div>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>Problems Solved</h3>
+            <div class="stat-value" id="totalSolved">0</div>
+            <div class="stat-change">+0 today</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>Current Streak</h3>
+            <div class="stat-value" id="currentStreak">0 days</div>
+            <div class="stat-change" id="streakStatus">Keep going!</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>Accuracy</h3>
+            <div class="stat-value" id="accuracyRate">0%</div>
+            <div class="stat-change">Last 7 days</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>Daily Goal</h3>
+            <div class="stat-value" id="dailyGoal">0/1</div>
+            <div class="goal-progress">
+              <div class="progress-bar" id="goalProgress"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="charts-container">
+          <div class="chart-card">
+            <h3>Weekly Activity</h3>
+            <canvas id="weeklyChart"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Problem Distribution</h3>
+            <canvas id="typeChart"></canvas>
+          </div>
+        </div>
+        
+        <div class="motivational-quote">
+          <p id="dailyQuote">"The only way to learn to code is to write code."</p>
+          <button id="refreshQuote"><i class="fas fa-sync-alt"></i> New Quote</button>
+        </div>
+      </section>
+
+      <!-- Problems Screen -->
+      <section class="screen problems hidden">
+        <div class="problems-header">
+          <h2><i class="fas fa-list-check"></i> Problem Sets</h2>
+          <div class="search-filter">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" id="problemSearch" placeholder="Search problems..." />
+            </div>
+            <select id="difficultyFilter">
+              <option value="all">All Difficulties</option>
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+            <select id="categoryFilter">
+              <option value="all">All Categories</option>
+              <option value="arrays">Arrays</option>
+              <option value="linked-lists">Linked Lists</option>
+              <option value="trees">Trees</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="problems-container" id="problemsContainer">
+          <!-- Problems will be dynamically inserted here -->
+        </div>
+      </section>
+
+      <!-- Statistics Screen -->
+      <section class="screen stats hidden">
+        <h2><i class="fas fa-chart-line"></i> Your Statistics</h2>
+        <div class="stats-tabs">
+          <button class="tab-btn active" data-tab="overview">Overview</button>
+          <button class="tab-btn" data-tab="history">History</button>
+          <button class="tab-btn" data-tab="achievements">Achievements</button>
+        </div>
+        
+        <div class="tab-content active" data-tab="overview">
+          <div class="stats-overview">
+            <div class="big-chart">
+              <canvas id="progressChart"></canvas>
+            </div>
+            <div class="stats-details">
+              <div class="detail-card">
+                <h3>Total Problems Solved</h3>
+                <div class="detail-value" id="totalProblemsStat">0</div>
+              </div>
+              <div class="detail-card">
+                <h3>Longest Streak</h3>
+                <div class="detail-value" id="longestStreakStat">0 days</div>
+              </div>
+              <div class="detail-card">
+                <h3>Favorite Category</h3>
+                <div class="detail-value" id="favCategoryStat">-</div>
+              </div>
+              <div class="detail-card">
+                <h3>Average Daily Problems</h3>
+                <div class="detail-value" id="avgDailyStat">0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="tab-content" data-tab="history">
+          <div class="history-container">
+            <canvas id="historyChart"></canvas>
+          </div>
+        </div>
+        
+        <div class="tab-content" data-tab="achievements">
+          <div class="achievements-grid" id="achievementsContainer">
+            <!-- Achievements will be loaded here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Goals Screen -->
+      <section class="screen goals hidden">
+        <h2><i class="fas fa-bullseye"></i> Daily Goals</h2>
+        <div class="goals-container">
+          <div class="goal-card">
+            <div class="goal-header">
+              <h3>Daily Coding Goal</h3>
+              <div class="goal-toggle">
+                <label class="switch">
+                  <input type="checkbox" id="dailyGoalToggle" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+            <div class="goal-body">
+              <div class="goal-setting">
+                <label for="dailyProblemCount">Problems to solve daily:</label>
+                <input type="number" id="dailyProblemCount" min="1" max="10" value="1" />
+              </div>
+              <div class="goal-setting">
+                <label for="goalDifficulty">Preferred difficulty:</label>
+                <select id="goalDifficulty">
+                  <option value="any">Any Difficulty</option>
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </div>
+              <div class="goal-progress-container">
+                <h4>Today's Progress</h4>
+                <div class="goal-progress-bar">
+                  <div class="progress-fill" id="todayGoalProgress"></div>
+                </div>
+                <div class="goal-progress-text" id="todayGoalText">0/1 problems solved</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="goal-card">
+            <div class="goal-header">
+              <h3>Weekly Challenge</h3>
+              <div class="goal-badge">7 days</div>
+            </div>
+            <div class="goal-body">
+              <div class="weekly-progress">
+                <div class="week-days">
+                  <div class="day" data-day="0">S</div>
+                  <div class="day" data-day="1">M</div>
+                  <div class="day" data-day="2">T</div>
+                  <div class="day" data-day="3">W</div>
+                  <div class="day" data-day="4">T</div>
+                  <div class="day" data-day="5">F</div>
+                  <div class="day" data-day="6">S</div>
+                </div>
+                <div class="week-progress-bar">
+                  <div class="week-fill" id="weekProgressFill"></div>
+                </div>
+                <div class="week-progress-text" id="weekProgressText">0/7 days completed</div>
+              </div>
+              <button class="btn-primary" id="claimRewardBtn" disabled>Claim Reward</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
